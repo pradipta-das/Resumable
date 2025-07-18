@@ -27,9 +27,18 @@ import { Icon } from './Icon'
 interface ResumeBuilderProps {
   initialResume?: Resume
   onSave: (resume: Resume) => void
+  selectedTemplate?: string
+  onTemplateChange?: () => void
+  onExportPDF?: () => void
 }
 
-export function ResumeBuilder({ initialResume, onSave }: ResumeBuilderProps) {
+export function ResumeBuilder({ 
+  initialResume, 
+  onSave, 
+  selectedTemplate,
+  onTemplateChange,
+  onExportPDF 
+}: ResumeBuilderProps) {
   const [resume, setResume] = useState<Resume>(() => {
     if (initialResume) {
       return initialResume
@@ -209,12 +218,26 @@ export function ResumeBuilder({ initialResume, onSave }: ResumeBuilderProps) {
                   Save Resume
                 </button>
                 
+                {onTemplateChange && (
+                  <button 
+                    onClick={onTemplateChange}
+                    className="btn btn-outline"
+                  >
+                    <Icon name="palette" size={16} className="mr-2" />
+                    Templates
+                  </button>
+                )}
+                
                 <button className="btn btn-outline">
                   <Icon name="eye" size={16} className="mr-2" />
                   Preview
                 </button>
                 
-                <button className="btn btn-outline">
+                <button 
+                  onClick={onExportPDF}
+                  className="btn btn-outline"
+                  disabled={!onExportPDF}
+                >
                   <Icon name="download" size={16} className="mr-2" />
                   Export PDF
                 </button>

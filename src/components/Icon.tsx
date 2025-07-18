@@ -18,6 +18,16 @@ import {
   Download,
   Copy,
   Settings,
+  Star,
+  Check,
+  Palette,
+  Users,
+  LogOut,
+  LogIn,
+  Menu,
+  X,
+  ChevronDown,
+  ArrowLeft,
   LucideIcon
 } from 'lucide-react'
 
@@ -40,6 +50,16 @@ const iconMap: Record<string, LucideIcon> = {
   download: Download,
   copy: Copy,
   settings: Settings,
+  star: Star,
+  check: Check,
+  palette: Palette,
+  users: Users,
+  logout: LogOut,
+  login: LogIn,
+  menu: Menu,
+  x: X,
+  'chevron-down': ChevronDown,
+  'arrow-left': ArrowLeft,
 }
 
 interface IconProps {

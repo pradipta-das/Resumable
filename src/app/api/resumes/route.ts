@@ -1,14 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
 import { connectToDatabase } from '@/lib/db'
 import { storage } from '@/lib/storage'
+import { authOptions } from '@/lib/auth'
 import { Resume } from '@/types/resume'
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     // Try MongoDB first, fallback to in-memory storage
     try {
       const { db } = await connectToDatabase()
-      const resumes = await db.collection('resumes').find({}).toArray()
+      const resumes = await db.collection('resumes').find({ 
+        userId: session.user.id 
+      }).toArray()
       return NextResponse.json({ resumes })
     } catch (mongoError) {
       console.warn('MongoDB not available, using in-memory storage')
@@ -26,6 +39,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const resume: Resume = await request.json()
     
     // Try MongoDB first, fallback to in-memory storage
@@ -33,6 +55,7 @@ export async function POST(request: NextRequest) {
       const { db } = await connectToDatabase()
       const result = await db.collection('resumes').insertOne({
         ...resume,
+        userId: session.user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -43,7 +66,10 @@ export async function POST(request: NextRequest) {
       })
     } catch (mongoError) {
       console.warn('MongoDB not available, using in-memory storage')
-      const result = await storage.create(resume)
+      const result = await storage.create({
+        ...resume,
+        userId: session.user.id,
+      })
       return NextResponse.json({ 
         id: result.id,
         message: 'Resume created successfully (in-memory)' 
