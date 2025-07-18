@@ -1,233 +1,160 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { connectToDatabase } from '@/lib/db'
-import { authOptions } from '@/lib/auth'
-import { CustomTemplate } from '@/types/template'
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { Template } from '@/types/template';
+import { 
+  getAllTemplates, 
+  getTemplatesByCategory, 
+  getFreeTemplates, 
+  getPremiumTemplates,
+  getPublicTemplates 
+} from '@/lib/templates';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category')
-    const isPublic = searchParams.get('public') === 'true'
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get('category');
+    const isPremium = searchParams.get('premium') === 'true';
+    const isFree = searchParams.get('free') === 'true';
+    const isPublic = searchParams.get('public') === 'true';
     
-    // Try MongoDB first, fallback to default templates
-    try {
-      const { db } = await connectToDatabase()
-      
-      let query: any = {}
-      if (category) query.category = category
-      if (isPublic) query.isPublic = true
-      
-      const templates = await db.collection('templates').find(query).toArray()
-      
-      return NextResponse.json({ templates })
-    } catch (mongoError) {
-      console.warn('MongoDB not available, using default templates')
-      
-      // Return default templates
-      const defaultTemplates: CustomTemplate[] = [
-        {
-          _id: '1',
-          name: 'Modern Professional',
-          description: 'Clean and modern design perfect for tech professionals',
-          category: 'modern',
-          style: {
-            colors: {
-              primary: '#2563eb',
-              secondary: '#64748b',
-              accent: '#0ea5e9',
-              text: '#1e293b',
-              background: '#ffffff',
-              border: '#e2e8f0'
-            },
-            fonts: {
-              heading: 'Inter',
-              body: 'Inter',
-              size: {
-                h1: '2rem',
-                h2: '1.5rem',
-                h3: '1.25rem',
-                body: '1rem',
-                small: '0.875rem'
-              }
-            },
-            spacing: {
-              section: '2rem',
-              paragraph: '1rem',
-              line: '1.5'
-            },
-            layout: {
-              maxWidth: '8.5in',
-              columns: 1,
-              headerHeight: '3rem'
-            }
-          },
-          layout: 'single-column',
-          preview: '/templates/modern-preview.png',
-          isPublic: true,
-          isPremium: false,
-          createdBy: 'system',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          downloads: 1250,
-          rating: 4.8,
-          tags: ['modern', 'professional', 'tech']
-        },
-        {
-          _id: '2',
-          name: 'Classic Executive',
-          description: 'Traditional layout for senior executives and managers',
-          category: 'classic',
-          style: {
-            colors: {
-              primary: '#1f2937',
-              secondary: '#6b7280',
-              accent: '#374151',
-              text: '#111827',
-              background: '#ffffff',
-              border: '#d1d5db'
-            },
-            fonts: {
-              heading: 'Times New Roman',
-              body: 'Times New Roman',
-              size: {
-                h1: '1.875rem',
-                h2: '1.5rem',
-                h3: '1.25rem',
-                body: '1rem',
-                small: '0.875rem'
-              }
-            },
-            spacing: {
-              section: '1.5rem',
-              paragraph: '0.75rem',
-              line: '1.4'
-            },
-            layout: {
-              maxWidth: '8.5in',
-              columns: 1,
-              headerHeight: '2.5rem'
-            }
-          },
-          layout: 'single-column',
-          preview: '/templates/classic-preview.png',
-          isPublic: true,
-          isPremium: false,
-          createdBy: 'system',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          downloads: 890,
-          rating: 4.6,
-          tags: ['classic', 'executive', 'traditional']
-        },
-        {
-          _id: '3',
-          name: 'Creative Portfolio',
-          description: 'Eye-catching design for creative professionals',
-          category: 'creative',
-          style: {
-            colors: {
-              primary: '#7c3aed',
-              secondary: '#a78bfa',
-              accent: '#c084fc',
-              text: '#1f2937',
-              background: '#ffffff',
-              border: '#e5e7eb'
-            },
-            fonts: {
-              heading: 'Poppins',
-              body: 'Open Sans',
-              size: {
-                h1: '2.25rem',
-                h2: '1.75rem',
-                h3: '1.375rem',
-                body: '1rem',
-                small: '0.875rem'
-              }
-            },
-            spacing: {
-              section: '2.5rem',
-              paragraph: '1.25rem',
-              line: '1.6'
-            },
-            layout: {
-              maxWidth: '8.5in',
-              columns: 2,
-              headerHeight: '4rem',
-              sidebarWidth: '35%'
-            }
-          },
-          layout: 'two-column',
-          preview: '/templates/creative-preview.png',
-          isPublic: true,
-          isPremium: true,
-          createdBy: 'system',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          downloads: 650,
-          rating: 4.9,
-          tags: ['creative', 'portfolio', 'design']
-        }
-      ]
-      
-      let filteredTemplates = defaultTemplates
-      if (category) {
-        filteredTemplates = defaultTemplates.filter(t => t.category === category)
-      }
-      
-      return NextResponse.json({ templates: filteredTemplates })
+    let templates: Template[] = [];
+    
+    // Get templates based on filters
+    if (category) {
+      templates = getTemplatesByCategory(category);
+    } else if (isPremium) {
+      templates = getPremiumTemplates();
+    } else if (isFree) {
+      templates = getFreeTemplates();
+    } else if (isPublic) {
+      templates = getPublicTemplates();
+    } else {
+      templates = getAllTemplates();
     }
+    
+    return NextResponse.json({ templates });
   } catch (error) {
-    console.error('Error fetching templates:', error)
+    console.error('Error fetching templates:', error);
     return NextResponse.json(
       { error: 'Failed to fetch templates' },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions);
     
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Authentication required' },
         { status: 401 }
-      )
+      );
     }
-
-    const template: Omit<CustomTemplate, '_id' | 'createdAt' | 'updatedAt'> = await request.json()
     
-    // Try MongoDB first
-    try {
-      const { db } = await connectToDatabase()
-      
-      const result = await db.collection('templates').insertOne({
-        ...template,
-        createdBy: session.user.id,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        downloads: 0,
-        rating: 0,
-      })
-      
-      return NextResponse.json({
-        message: 'Template created successfully',
-        templateId: result.insertedId
-      })
-    } catch (mongoError) {
-      console.warn('MongoDB not available, template creation requires database')
+    // Check if user is admin for creating templates
+    if (session.user.role !== 'admin') {
       return NextResponse.json(
-        { error: 'Database required for template creation' },
-        { status: 503 }
-      )
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
     }
+    
+    const templateData = await request.json();
+    
+    // For now, return a success message since we're using static templates
+    // In a real implementation, this would save to database
+    return NextResponse.json(
+      { message: 'Template creation not implemented in static mode' },
+      { status: 501 }
+    );
   } catch (error) {
-    console.error('Error creating template:', error)
+    console.error('Error creating template:', error);
     return NextResponse.json(
       { error: 'Failed to create template' },
       { status: 500 }
-    )
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Check if user is admin for updating templates
+    if (session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
+    }
+    
+    const templateData = await request.json();
+    
+    // For now, return a success message since we're using static templates
+    // In a real implementation, this would update in database
+    return NextResponse.json(
+      { message: 'Template update not implemented in static mode' },
+      { status: 501 }
+    );
+  } catch (error) {
+    console.error('Error updating template:', error);
+    return NextResponse.json(
+      { error: 'Failed to update template' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    
+    // Check if user is admin for deleting templates
+    if (session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
+    }
+    
+    const { searchParams } = new URL(request.url);
+    const templateId = searchParams.get('id');
+    
+    if (!templateId) {
+      return NextResponse.json(
+        { error: 'Template ID required' },
+        { status: 400 }
+      );
+    }
+    
+    // For now, return a success message since we're using static templates
+    // In a real implementation, this would delete from database
+    return NextResponse.json(
+      { message: 'Template deletion not implemented in static mode' },
+      { status: 501 }
+    );
+  } catch (error) {
+    console.error('Error deleting template:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete template' },
+      { status: 500 }
+    );
   }
 }
