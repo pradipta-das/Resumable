@@ -4,16 +4,18 @@ import { connectToDatabase } from '@/lib/db'
 import { storage } from '@/lib/storage'
 import { authOptions } from '@/lib/auth'
 import { generateTemplateHTML, getTemplateById } from '@/lib/templates'
+import { ObjectId } from 'mongodb'
 import puppeteer from 'puppeteer'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const session = await getServerSession(authOptions)
     
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -25,8 +27,8 @@ export async function GET(
     try {
       const { db } = await connectToDatabase()
       resume = await db.collection('resumes').findOne({ 
-        _id: params.id,
-        userId: session.user.id 
+        _id: new ObjectId(params.id),
+        userId: (session.user as any).id 
       })
     } catch (mongoError) {
       console.warn('MongoDB not available, using in-memory storage')
@@ -51,7 +53,7 @@ export async function GET(
       )
     }
     
-    const html = generateTemplateHTML(resume, template)
+    const html = generateTemplateHTML(resume as any, template)
     
     // Generate PDF using Puppeteer
     const browser = await puppeteer.launch({

@@ -8,45 +8,37 @@ export interface TemplateStyle {
     border: string
   }
   fonts: {
-    heading: string
-    body: string
-    size: {
-      h1: string
-      h2: string
-      h3: string
-      body: string
-      small: string
-    }
+    primary: string
+    secondary: string
+    headings: string
   }
   spacing: {
     section: string
-    paragraph: string
-    line: string
+    item: string
+    compact: string
   }
   layout: {
-    maxWidth: string
     columns: number
-    headerHeight: string
-    sidebarWidth?: string
+    sidebar: boolean
+    headerStyle: string
   }
 }
 
-export interface CustomTemplate {
-  _id?: string
+export interface Template {
+  id: string
   name: string
   description: string
-  category: 'professional' | 'creative' | 'modern' | 'classic'
+  category: string
   style: TemplateStyle
-  layout: 'single-column' | 'two-column' | 'sidebar'
-  preview: string
   isPublic: boolean
   isPremium: boolean
   createdBy: string
-  createdAt: Date
-  updatedAt: Date
   downloads: number
   rating: number
   tags: string[]
+  preview: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface TemplatePreview {

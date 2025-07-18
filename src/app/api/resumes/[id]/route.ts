@@ -6,9 +6,10 @@ import { Resume } from '@/types/resume'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     // Try MongoDB first, fallback to in-memory storage
     try {
       const { db } = await connectToDatabase()
@@ -48,9 +49,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const resume: Resume = await request.json()
     
     // Try MongoDB first, fallback to in-memory storage
@@ -102,9 +104,10 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     // Try MongoDB first, fallback to in-memory storage
     try {
       const { db } = await connectToDatabase()

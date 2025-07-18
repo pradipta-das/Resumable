@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     try {
       const { db } = await connectToDatabase()
       const resumes = await db.collection('resumes').find({ 
-        userId: session.user.id 
+        userId: (session.user as any).id 
       }).toArray()
       return NextResponse.json({ resumes })
     } catch (mongoError) {
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -53,9 +53,10 @@ export async function POST(request: NextRequest) {
     // Try MongoDB first, fallback to in-memory storage
     try {
       const { db } = await connectToDatabase()
+      const { _id, ...resumeData } = resume
       const result = await db.collection('resumes').insertOne({
-        ...resume,
-        userId: session.user.id,
+        ...resumeData,
+        userId: (session.user as any).id,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -68,7 +69,7 @@ export async function POST(request: NextRequest) {
       console.warn('MongoDB not available, using in-memory storage')
       const result = await storage.create({
         ...resume,
-        userId: session.user.id,
+        userId: (session.user as any).id,
       })
       return NextResponse.json({ 
         id: result.id,
