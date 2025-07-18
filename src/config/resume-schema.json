@@ -1,0 +1,360 @@
+{
+  "sections": {
+    "personal": {
+      "id": "personal",
+      "title": "Personal Information",
+      "icon": "user",
+      "required": true,
+      "fields": [
+        {
+          "id": "fullName",
+          "label": "Full Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "Enter your full name"
+        },
+        {
+          "id": "email",
+          "label": "Email",
+          "type": "email",
+          "required": true,
+          "placeholder": "your.email@example.com"
+        },
+        {
+          "id": "phone",
+          "label": "Phone",
+          "type": "tel",
+          "required": false,
+          "placeholder": "+1 (555) 123-4567"
+        },
+        {
+          "id": "location",
+          "label": "Location",
+          "type": "text",
+          "required": false,
+          "placeholder": "City, State/Country"
+        },
+        {
+          "id": "website",
+          "label": "Website",
+          "type": "url",
+          "required": false,
+          "placeholder": "https://yourwebsite.com"
+        },
+        {
+          "id": "linkedin",
+          "label": "LinkedIn",
+          "type": "url",
+          "required": false,
+          "placeholder": "https://linkedin.com/in/yourprofile"
+        }
+      ]
+    },
+    "summary": {
+      "id": "summary",
+      "title": "Professional Summary",
+      "icon": "file-text",
+      "required": false,
+      "fields": [
+        {
+          "id": "content",
+          "label": "Summary",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Write a brief professional summary..."
+        }
+      ]
+    },
+    "experience": {
+      "id": "experience",
+      "title": "Work Experience",
+      "icon": "briefcase",
+      "required": false,
+      "repeatable": true,
+      "fields": [
+        {
+          "id": "company",
+          "label": "Company",
+          "type": "text",
+          "required": true,
+          "placeholder": "Company Name"
+        },
+        {
+          "id": "position",
+          "label": "Position",
+          "type": "text",
+          "required": true,
+          "placeholder": "Job Title"
+        },
+        {
+          "id": "startDate",
+          "label": "Start Date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "id": "endDate",
+          "label": "End Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "current",
+          "label": "Currently Working Here",
+          "type": "checkbox",
+          "required": false
+        },
+        {
+          "id": "location",
+          "label": "Location",
+          "type": "text",
+          "required": false,
+          "placeholder": "City, State/Country"
+        },
+        {
+          "id": "description",
+          "label": "Description",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Describe your responsibilities and achievements..."
+        }
+      ]
+    },
+    "education": {
+      "id": "education",
+      "title": "Education",
+      "icon": "graduation-cap",
+      "required": false,
+      "repeatable": true,
+      "fields": [
+        {
+          "id": "institution",
+          "label": "Institution",
+          "type": "text",
+          "required": true,
+          "placeholder": "University/School Name"
+        },
+        {
+          "id": "degree",
+          "label": "Degree",
+          "type": "text",
+          "required": true,
+          "placeholder": "Bachelor of Science, Master of Arts, etc."
+        },
+        {
+          "id": "field",
+          "label": "Field of Study",
+          "type": "text",
+          "required": false,
+          "placeholder": "Computer Science, Business, etc."
+        },
+        {
+          "id": "startDate",
+          "label": "Start Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "endDate",
+          "label": "End Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "gpa",
+          "label": "GPA",
+          "type": "text",
+          "required": false,
+          "placeholder": "3.8/4.0"
+        },
+        {
+          "id": "description",
+          "label": "Description",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Relevant coursework, achievements, etc."
+        }
+      ]
+    },
+    "skills": {
+      "id": "skills",
+      "title": "Skills",
+      "icon": "code",
+      "required": false,
+      "fields": [
+        {
+          "id": "categories",
+          "label": "Skill Categories",
+          "type": "array",
+          "required": false,
+          "itemFields": [
+            {
+              "id": "category",
+              "label": "Category",
+              "type": "text",
+              "placeholder": "e.g., Programming Languages, Tools, etc."
+            },
+            {
+              "id": "skills",
+              "label": "Skills",
+              "type": "textarea",
+              "placeholder": "List skills separated by commas"
+            }
+          ]
+        }
+      ]
+    },
+    "projects": {
+      "id": "projects",
+      "title": "Projects",
+      "icon": "folder",
+      "required": false,
+      "repeatable": true,
+      "fields": [
+        {
+          "id": "name",
+          "label": "Project Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "Project Name"
+        },
+        {
+          "id": "url",
+          "label": "Project URL",
+          "type": "url",
+          "required": false,
+          "placeholder": "https://github.com/yourproject"
+        },
+        {
+          "id": "startDate",
+          "label": "Start Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "endDate",
+          "label": "End Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "technologies",
+          "label": "Technologies Used",
+          "type": "text",
+          "required": false,
+          "placeholder": "React, Node.js, MongoDB, etc."
+        },
+        {
+          "id": "description",
+          "label": "Description",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "Describe the project and your role..."
+        }
+      ]
+    },
+    "certifications": {
+      "id": "certifications",
+      "title": "Certifications",
+      "icon": "award",
+      "required": false,
+      "repeatable": true,
+      "fields": [
+        {
+          "id": "name",
+          "label": "Certification Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "Certification Name"
+        },
+        {
+          "id": "issuer",
+          "label": "Issuing Organization",
+          "type": "text",
+          "required": true,
+          "placeholder": "Organization Name"
+        },
+        {
+          "id": "date",
+          "label": "Date Obtained",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "expiryDate",
+          "label": "Expiry Date",
+          "type": "date",
+          "required": false
+        },
+        {
+          "id": "credentialId",
+          "label": "Credential ID",
+          "type": "text",
+          "required": false,
+          "placeholder": "Credential ID"
+        },
+        {
+          "id": "url",
+          "label": "Credential URL",
+          "type": "url",
+          "required": false,
+          "placeholder": "https://certification-url.com"
+        }
+      ]
+    },
+    "languages": {
+      "id": "languages",
+      "title": "Languages",
+      "icon": "globe",
+      "required": false,
+      "fields": [
+        {
+          "id": "languages",
+          "label": "Languages",
+          "type": "array",
+          "required": false,
+          "itemFields": [
+            {
+              "id": "language",
+              "label": "Language",
+              "type": "text",
+              "placeholder": "e.g., English, Spanish, etc."
+            },
+            {
+              "id": "proficiency",
+              "label": "Proficiency",
+              "type": "select",
+              "options": [
+                "Native",
+                "Fluent",
+                "Proficient",
+                "Intermediate",
+                "Basic"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "templates": {
+    "modern": {
+      "id": "modern",
+      "name": "Modern",
+      "description": "Clean and modern design with accent colors",
+      "preview": "/templates/modern-preview.png"
+    },
+    "classic": {
+      "id": "classic",
+      "name": "Classic",
+      "description": "Traditional resume layout",
+      "preview": "/templates/classic-preview.png"
+    },
+    "creative": {
+      "id": "creative",
+      "name": "Creative",
+      "description": "Creative design with unique layout",
+      "preview": "/templates/creative-preview.png"
+    }
+  }
+}
